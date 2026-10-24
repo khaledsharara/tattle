@@ -1,0 +1,64 @@
+name: Test report (provider or router)
+description: You tried a beta provider or router. Tell us how it went, good or bad.
+labels: [test-report]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you! Beta providers and routers are built from how their own apps and APIs work, but nobody has confirmed them on a real account or device yet. Your report is how they stop being beta.
+
+        **Never paste real data.** No phone or account numbers, user names, tokens, bills, MAC or public IP addresses. Replace them with made-up ones and keep the wording of any message.
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What did you test?
+      options:
+        - WE (Telecom Egypt)
+        - Vodafone Egypt (home internet)
+        - Aussie Broadband
+        - Telenet / BASE
+        - Ogero
+        - Comcast Xfinity
+        - Start.ca
+        - OpenWrt (nlbwmon)
+        - MikroTik (RouterOS 7)
+        - UniFi
+        - Something else (say below)
+    validations:
+      required: true
+  - type: dropdown
+    id: result
+    attributes:
+      label: Did it work?
+      options:
+        - Yes, the figures match the provider's app / the router's page
+        - Partly (say what was off)
+        - No
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: What happened
+      description: What you did, what Tattle showed (screenshots welcome with numbers blurred), and any error message. For routers, the model and firmware version.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Log lines (optional)
+      description: "`docker compose logs tattle --since 1h`, with any personal data replaced."
+      render: text
+  - type: input
+    id: version
+    attributes:
+      label: Tattle version
+      description: Shown at the bottom right of the dashboard.
+      placeholder: 0.1.0
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy
+      options:
+        - label: I removed every real number, account ID, token, bill amount and address from this report
+          required: true

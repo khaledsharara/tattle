@@ -1,0 +1,74 @@
+# Tattle. install.sh writes .env next to this file; see .env.example.
+#
+#   docker compose up -d                       quota or router mode
+#   docker compose --profile gateway up -d     gateway mode
+#
+# Both services run the same image. The dashboard has no privileges at all; in
+# gateway mode a second container with network capabilities hands out
+# addresses and keeps the counters, and the two share only files, which the
+# dashboard mounts read-only.
+
+x-logging: &logging
+  driver: json-file
+  options: {max-size: "10m", max-file: "3"}
+
+services:
+  tattle:
+    image: ghcr.io/khaledsharara/tattle:${TATTLE_VERSION:-latest}
+    build: .
+    restart: unless-stopped
+    # Host network: it reads the kernel's neighbour table, talks to the router,
+    # and serves the dashboard on the LAN.
+    network_mode: host
+    user: "1000:1000"
+    init: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    read_only: true
+    tmpfs: [/tmp]
+    env_file: .env
+    environment:
+      TATTLE_DB: /data/tattle.db
+      TATTLE_NFT_SNAPSHOT: /run/tattle/nft.json
+      TATTLE_GATEWAY_STATUS: /run/tattle/gateway.json
+      TATTLE_LEASES: /var/lib/tattle/dnsmasq.leases
+      TATTLE_DHCP_EVENTS: /var/lib/tattle/dhcp
+    volumes:
+      - ./data:/data
+      - tattle-run:/run/tattle:ro
+      - tattle-state:/var/lib/tattle:ro
+    logging: *logging
+
+  gateway:
+    image: ghcr.io/khaledsharara/tattle:${TATTLE_VERSION:-latest}  # the image `tattle` builds
+    profiles: [gateway]
+    # `docker compose run --rm gateway off` (or status) runs the other commands.
+    entrypoint: ["python", "-m", "tattle.gateway"]
+    command: ["run"]
+    restart: unless-stopped
+    network_mode: host
+    # Root inside the container, but only with the capabilities a router needs:
+    # firewall rules (NET_ADMIN), DHCP and probe sockets (NET_RAW), ports 53/67.
+    user: "0:0"
+    init: true
+    cap_drop: [ALL]
+    cap_add: [NET_ADMIN, NET_RAW, NET_BIND_SERVICE]
+    security_opt: ["no-new-privileges:true"]
+    read_only: true
+    tmpfs: [/tmp]
+    env_file: .env
+    volumes:
+      - tattle-run:/run/tattle
+      - tattle-state:/var/lib/tattle
+      # The host's iptables lock, so our rule changes never collide with Docker's.
+      # install.sh makes sure the file exists (a missing one would be created as a folder).
+      - type: bind
+        source: /run/xtables.lock
+        target: /run/xtables.lock
+        bind:
+          create_host_path: true
+    logging: *logging
+
+volumes:
+  tattle-run: # nft.json, gateway.json: rewritten every few seconds
+  tattle-state: # dnsmasq.leases and DHCP fingerprints: kept across upgrades

@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Install and setup guide
+    url: https://github.com/khaledsharara/tattle#install
+    about: Installing Tattle, picking a mode, and gateway mode step by step.
+  - name: Something not counting right?
+    url: https://github.com/khaledsharara/tattle/blob/main/docs/troubleshooting.md
+    about: The health panel's messages and what to do about each.

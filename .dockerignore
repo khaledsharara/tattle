@@ -1,0 +1,14 @@
+# Only the frontend sources and backend/tattle go into the image; keep the
+# build context small and free of local data.
+**/node_modules
+**/dist
+**/.venv
+**/__pycache__
+**/.pytest_cache
+**/*.db
+**/*.db-*
+**/*.tsbuildinfo
+data
+.git
+.env
+docs/screenshots

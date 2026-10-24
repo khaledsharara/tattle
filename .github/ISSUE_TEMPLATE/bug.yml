@@ -1,0 +1,45 @@
+name: Something's wrong
+description: Tattle shows something wrong, stops counting, or won't install.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        First look at the health panel on the Overview (it says what's wrong and what to do) and [troubleshooting](https://github.com/khaledsharara/tattle/blob/main/docs/troubleshooting.md).
+
+        **Never paste real data**: replace numbers, account IDs, MAC and public IP addresses with made-up ones.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what you expected
+    validations:
+      required: true
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Mode
+      options:
+        - Quota only
+        - Router
+        - Gateway
+        - Not installed yet
+    validations:
+      required: true
+  - type: textarea
+    id: setup
+    attributes:
+      label: Your setup
+      description: The machine (old laptop, Raspberry Pi 5, mini PC...), Linux distribution, router model, Wi-Fi extenders or mesh, provider.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs (optional)
+      description: "`docker compose logs --since 1h`, with personal data replaced."
+      render: text
+  - type: input
+    id: version
+    attributes:
+      label: Tattle version
+      placeholder: 0.1.0

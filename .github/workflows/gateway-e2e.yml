@@ -1,0 +1,58 @@
+# Gateway mode end to end, on a real Docker host: a pretend house in network
+# namespaces gets its addresses from the gateway container, downloads through
+# it, and the dashboard books the traffic on the right device. Once per host
+# firewall flavour the gateway has to cope with.
+name: Gateway e2e
+
+on:
+  pull_request:
+    paths:
+      - backend/tattle/gateway/**
+      - backend/requirements.txt
+      - Dockerfile
+      - docker-compose.yml
+      - tests/gateway-e2e.sh
+      - tests/e2e/**
+      - .github/workflows/gateway-e2e.yml
+  push:
+    branches: [main]
+    paths:
+      - backend/tattle/gateway/**
+      - backend/requirements.txt
+      - Dockerfile
+      - docker-compose.yml
+      - tests/gateway-e2e.sh
+      - tests/e2e/**
+      - .github/workflows/gateway-e2e.yml
+  workflow_dispatch:
+
+concurrency:
+  group: gateway-e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  e2e:
+    name: e2e (${{ matrix.firewall }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        # iptables-nft: the default on current distributions.
+        # iptables-legacy: older Debian/Ubuntu/Raspberry Pi OS setups (update-alternatives + Docker restart).
+        # docker-nftables: Docker 29+'s nftables firewall backend (skipped, with the reason, on older Docker).
+        firewall: [iptables-nft, iptables-legacy, docker-nftables]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test tools
+        # busybox for udhcpc, dnsmasq-base for the rogue DHCP server (no service gets started).
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends busybox dnsmasq-base nftables
+      - name: Build the image
+        run: docker build -t ghcr.io/khaledsharara/tattle:e2e .
+      - name: Run
+        run: sudo SKIP_BUILD=1 bash tests/gateway-e2e.sh ${{ matrix.firewall }}

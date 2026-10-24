@@ -1,0 +1,37 @@
+name: Support my internet provider
+description: Ask for (or offer to add) support for another provider's usage figures.
+labels: [provider]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Tattle reads a provider's figures the way the provider's own app or website does. Adding one is one Python file and a few made-up sample answers: see [docs/adding-a-provider.md](https://github.com/khaledsharara/tattle/blob/main/docs/adding-a-provider.md). A pull request is the fastest way, but what you know about the provider helps too.
+
+        **Never paste real data**: no numbers, user names, passwords, tokens, cookies or bills.
+  - type: input
+    id: provider
+    attributes:
+      label: Provider and country
+      placeholder: Example Telecom, Egypt
+    validations:
+      required: true
+  - type: textarea
+    id: shows
+    attributes:
+      label: What its app or website shows
+      description: For example "GB left, renewal date, daily usage for 30 days, bills". How you sign in (password, SMS code, captcha).
+    validations:
+      required: true
+  - type: textarea
+    id: api
+    attributes:
+      label: Anything known about its API (optional)
+      description: Links to scripts, Home Assistant integrations or projects that read it; request URLs you saw in the browser's network tab (with personal values removed).
+  - type: dropdown
+    id: help
+    attributes:
+      label: Can you help?
+      options:
+        - I'll open a pull request
+        - I can test a build on my account
+        - Just asking

@@ -1,0 +1,12 @@
+.venv/
+node_modules/
+dist/
+__pycache__/
+.pytest_cache/
+*.db
+*.db-*
+.env
+/data/
+*.tsbuildinfo
+setup-code.txt
+.playwright-mcp/

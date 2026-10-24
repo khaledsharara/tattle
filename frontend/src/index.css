@@ -1,0 +1,116 @@
+@import "@fontsource-variable/archivo/wdth.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+    /* chrome */
+    --page: 236 238 233;
+    --surface: 252 252 251;
+    --ink: 22 24 29;
+    --ink-2: 82 81 78;
+    --muted: 107 106 101;
+    --hairline: 225 224 217;
+    --track: 228 229 223;
+    --focus: 42 120 214;
+    /* status (always paired with an icon and a label) */
+    --good: 12 163 12;
+    --warn: 250 178 25;
+    --critical: 208 59 59;
+    /* categorical series, fixed order (validated: scripts/validate_palette.js) */
+    --s1: 42 120 214;
+    --s2: 235 104 52;
+    --s3: 27 175 122;
+    --s4: 237 161 0;
+    --s5: 232 123 164;
+    --s6: 0 131 0;
+    --s7: 98 80 214;
+    --s-other: 172 170 162;
+    --axis: 137 135 129;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      color-scheme: dark;
+      --page: 16 18 20;
+      --surface: 26 26 25;
+      --ink: 240 239 236;
+      --ink-2: 195 194 183;
+      --muted: 154 152 144;
+      --hairline: 44 44 42;
+      --track: 46 47 45;
+      --focus: 57 135 229;
+      --s1: 57 135 229;
+      --s2: 217 89 38;
+      --s3: 25 158 112;
+      --s4: 201 133 0;
+      --s5: 213 81 129;
+      --s6: 0 131 0;
+      --s7: 144 133 233;
+      --s-other: 92 91 87;
+      --axis: 137 135 129;
+    }
+  }
+
+  html {
+    font-family: theme("fontFamily.sans");
+    font-stretch: 100%;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    @apply bg-page text-ink;
+    min-height: 100vh;
+  }
+
+  :focus-visible {
+    outline: 2px solid rgb(var(--focus));
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      transition-duration: 0.01ms !important;
+      animation-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  /* Meter readouts: the wide cut of Archivo, like the digits on a utility meter. */
+  .readout {
+    font-stretch: 125%;
+    font-weight: 640;
+    font-variant-numeric: lining-nums;
+  }
+
+  .panel {
+    @apply rounded-xl bg-surface ring-1 ring-hairline;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-3.5 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .btn-primary {
+    @apply btn bg-ink text-page hover:bg-ink/85;
+  }
+
+  .btn-quiet {
+    @apply btn text-ink-2 ring-1 ring-hairline hover:bg-ink/5;
+  }
+
+  .field {
+    @apply w-full rounded-lg bg-page px-3 py-2 text-sm text-ink ring-1 ring-hairline placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-focus;
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}

@@ -1,0 +1,32 @@
+name: Support my router
+description: Ask for (or offer to add) a router adapter.
+labels: [router]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        A router adapter can let Tattle count per device without becoming the network's gateway (if the router keeps per-device counters), or tell which line is in use and how fast it synced. See [docs/adding-a-router.md](https://github.com/khaledsharara/tattle/blob/main/docs/adding-a-router.md).
+
+        **Never paste real data**: no passwords, MAC or public IP addresses.
+  - type: input
+    id: router
+    attributes:
+      label: Router model and firmware
+      placeholder: Example Networks AX3000, firmware 1.2.3
+    validations:
+      required: true
+  - type: textarea
+    id: shows
+    attributes:
+      label: What it shows
+      description: Does its web page or app show traffic per device? Internet counters? Does it have an API (REST, SSH, SNMP)?
+    validations:
+      required: true
+  - type: dropdown
+    id: help
+    attributes:
+      label: Can you help?
+      options:
+        - I'll open a pull request
+        - I can test a build on my router
+        - Just asking
