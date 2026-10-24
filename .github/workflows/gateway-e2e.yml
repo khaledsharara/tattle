@@ -46,7 +46,7 @@ jobs:
         # docker-nftables: Docker 29+'s nftables firewall backend (skipped, with the reason, on older Docker).
         firewall: [iptables-nft, iptables-legacy, docker-nftables]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Test tools
         # busybox for udhcpc, dnsmasq-base for the rogue DHCP server (no service gets started).
         run: |
